@@ -10,13 +10,13 @@ const NavigationBar = () => {
           </div>
         <div className='flex items-center space-x-18'>
             <ul className='flex text-[20px] font-normal text-[#1E1E1E] space-x-18'>
-                <li>Home</li>
-                <li>About</li>
-                <li>Services</li>
-                <li>Testimonials</li>
-                <li>Inquiry</li>
+                <li className='hover:text-[#3525c3] cursor-pointer'>Home</li>
+                <li className='hover:text-[#3525c3] cursor-pointer'>About</li>
+                <li className='hover:text-[#3525c3] cursor-pointer'>Services</li>
+                <li className='hover:text-[#3525c3] cursor-pointer'>Testimonials</li>
+                <li className='hover:text-[#3525c3] cursor-pointer'>Inquiry</li>
             </ul>
-            <Button className='bg-[#3525C3] text-[20px] font-normal p-7 px-12'>
+            <Button className='bg-[#3525C3] text-[20px] font-normal p-6 px-12 cursor-pointer'>
             Login
             </Button>
         </div>

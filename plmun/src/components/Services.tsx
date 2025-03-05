@@ -1,28 +1,28 @@
 import React from 'react'
 import { Card, CardContent, CardDescription, CardTitle } from './ui/card'
-
+import { IoMdMusicalNotes } from "react-icons/io";
 const Services = () => {
     const services = [
         {
-            icon:'/',
+            icon:<IoMdMusicalNotes/>,
             title:'Lorem Ipsum can i get some',
             desc:"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
         },
 
         {
-            icon:'/',
+            icon:<IoMdMusicalNotes/>,
             title:'Lorem Ipsum can i get some',
             desc:"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
         },
 
         {
-            icon:'/',
+            icon:<IoMdMusicalNotes/>,
             title:'Lorem Ipsum can i get some',
             desc:"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
         },
 
         {
-            icon:'/',
+            icon:<IoMdMusicalNotes/>,
             title:'Lorem Ipsum can i get some',
             desc:"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
         },
@@ -38,9 +38,9 @@ const Services = () => {
             {services.map((ourservices,index) => (
                 <Card key={index} className='border-2 border-[#3525C3] rounded-[10px] px-10'>
                 <CardContent className='flex  space-x-5'>
-                    <div className='bg-[#3525C3] rounded-[10px] h-[60px] w-[30%]'>
-                        {ourservices.icon}
-                    </div>
+                    <Card className='bg-[#3525C3] rounded-[10px] h-[60px] flex items-center justify-center text-[20px] text-white'>
+                        <CardContent>{ourservices.icon}</CardContent>
+                    </Card>
 
                     <div className='text-[#3525C3]'>
                         <CardTitle className='text-[20px] font-medium'>{ourservices.title}</CardTitle>

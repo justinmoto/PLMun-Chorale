@@ -20,8 +20,8 @@ const Hero = () => {
                 <p className='text-white font-light w-[33%] tracking-wide mt-3'>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using &apos;Content here, content here&apos;, making it look like readable English.</p>
 
                 <div className='space-x-10 mt-6'>
-                    <Button className='text-white bg-[#3525C3] px-12 py-5'>Inquire Here</Button>
-                    <Button className='text-white border-2 order-[#3525C3] bg-transparent px-12 py-5'>Sign Up</Button>
+                    <Button className='text-white bg-[#3525C3] px-12 py-5 cursor-pointer'>Inquire Here</Button>
+                    <Button className='text-white border-2 order-[#3525C3] bg-transparent px-12 py-5 cursor-pointer'>Sign Up</Button>
                 </div>
             </div>
 
