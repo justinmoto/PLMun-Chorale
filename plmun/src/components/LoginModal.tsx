@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 
 interface LoginModalProps {
@@ -16,7 +16,6 @@ interface LoginModalProps {
 }
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
-    if (!isOpen) return null;
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const router = useRouter();
@@ -26,24 +25,31 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         if (token) {
           router.push('/'); // Redirect if already logged in
         }
-      }, [router]);
+    }, [router]);
+
+    if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         try {
-            const response = await axios.post("/api/login",{
-            username,
-            password
-        })
+            const response = await axios.post("/api/login", {
+                username,
+                password
+            })
 
-        if(response.status === 200){
-            localStorage.setItem("token", response.data.token)
-            localStorage.setItem("username", response.data.username)
-            alert('Login Successfully')
-        }
-        }catch(error){
-            alert(error)
+            if(response.status === 200){
+                localStorage.setItem("token", response.data.token)
+                localStorage.setItem("username", response.data.username)
+                alert('Login Successfully')
+                window.location.reload()
+            }
+        } catch(error) {
+            if (error instanceof AxiosError) {
+                alert(error.response?.data?.error || 'Login failed')
+            } else {
+                alert('An unexpected error occurred')
+            }
         }
     } 
 
@@ -73,7 +79,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                                 Login
                             </button>
                         </div>
-                            <p className='font-light text-center text-[12px]'>Don't have an account yet? <span className='underline'>Sign Up Here</span></p>
+                            <p className='font-light text-center text-[12px]'>Don&apos;t have an account yet? <span className='underline'>Sign Up Here</span></p>
                     </form>
                 </CardContent>
             </Card>

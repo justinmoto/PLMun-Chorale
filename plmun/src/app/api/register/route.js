@@ -15,8 +15,8 @@ export async function POST(request){
         await pool.query(sql, [username, email, hashedPassword]);
         return NextResponse.json({success: "Successfully Registered a Account"}, {status:200})
 
-    }
-    catch(error){
-        return NextResponse.json({error: "Something went wrong!"}, {status: 500})
+    } catch(error) {
+        console.error('Registration error:', error);
+        return NextResponse.json({error: error.message || "Something went wrong!"}, {status: 500})
     }
 }
