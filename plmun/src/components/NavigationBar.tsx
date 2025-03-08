@@ -1,13 +1,38 @@
-import React from 'react'
+'use client'
+import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { IoMusicalNoteOutline } from "react-icons/io5";
+import LoginModal from './LoginModal';
+
 const NavigationBar = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    // Check for token and username on component mount
+    const token = localStorage.getItem('token');
+    const storedUsername = localStorage.getItem('username');
+    if (token && storedUsername) {
+      setIsAuthenticated(true);
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    setIsAuthenticated(false);
+    setUsername('');
+    window.location.reload(); // Refresh the page to reset all states
+  };
+
   return (
     <div className='flex items-center justify-between px-36 py-10'>
         <div className='flex items-center'>
           <IoMusicalNoteOutline className='text-[35px] text-[#3525C3]'/>
-          <h1 className='font-semibold text-[28px] text-[#3525C3] '>PLMun Chorale</h1>
-          </div>
+          <h1 className='font-semibold text-[28px] text-[#3525C3]'>PLMun Chorale</h1>
+        </div>
         <div className='flex items-center space-x-18'>
             <ul className='flex text-[17px] font-normal text-[#1E1E1E] space-x-18'>
                 <li className='hover:text-[#3525c3] cursor-pointer'>Home</li>
@@ -16,9 +41,27 @@ const NavigationBar = () => {
                 <li className='hover:text-[#3525c3] cursor-pointer'>Testimonials</li>
                 <li className='hover:text-[#3525c3] cursor-pointer'>Inquiry</li>
             </ul>
-            <Button className='bg-[#3525C3] text-[17px] font-normal p-5 px-12 cursor-pointer'>
-            Login
-            </Button>
+            
+            {isAuthenticated ? (
+              <div className="flex items-center gap-4">
+                <span className="text-[17px] text-[#1E1E1E]">{username}</span>
+                <Button 
+                  onClick={handleLogout}
+                  className='bg-red-500 hover:bg-red-600 text-[17px] font-normal p-5 px-12 cursor-pointer'
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                onClick={() => setIsModalOpen(true)} 
+                className='bg-[#3525C3] text-[17px] font-normal p-5 px-12 cursor-pointer'
+              >
+                Login
+              </Button>
+            )}
+
+            <LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
     </div>
   )

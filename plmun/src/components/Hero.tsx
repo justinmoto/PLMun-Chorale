@@ -1,8 +1,21 @@
+'use client'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
+import SignUpModal from './SignUpModal'
 
 const Hero = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check for token on component mount
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
     <div className="relative w-full h-[600px]">
       <Image 
@@ -21,10 +34,17 @@ const Hero = () => {
 
                 <div className='space-x-10 mt-6'>
                     <Button className='text-white bg-[#3525C3] px-12 py-5 cursor-pointer'>Inquire Here</Button>
-                    <Button className='text-white border-2 order-[#3525C3] bg-transparent px-12 py-5 cursor-pointer'>Sign Up</Button>
+                    {!isAuthenticated && (
+                      <Button 
+                        onClick={() => setIsModalOpen(true)} 
+                        className='text-white border-2 order-[#3525C3] bg-transparent px-12 py-5 cursor-pointer'
+                      >
+                        Sign Up
+                      </Button>
+                    )}
                 </div>
+                <SignUpModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
             </div>
-
         </div>
       </div>
     </div>
