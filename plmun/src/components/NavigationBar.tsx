@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { IoMusicalNoteOutline } from "react-icons/io5";
 import LoginModal from './LoginModal';
+import { FaUser } from "react-icons/fa";
+import Link from 'next/link';
 
 const NavigationBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +30,7 @@ const NavigationBar = () => {
   };
 
   return (
-    <div className='flex items-center justify-between px-36 py-10'>
+    <div className='flex items-center justify-between px-36 py-10 border-b-2'>
         <div className='flex items-center'>
           <IoMusicalNoteOutline className='text-[35px] text-[#3525C3]'/>
           <h1 className='font-semibold text-[28px] text-[#3525C3]'>PLMun Chorale</h1>
@@ -44,10 +46,10 @@ const NavigationBar = () => {
             
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
-                <span className="text-[17px] text-[#1E1E1E]">{username}</span>
+                <Link href='/profile' className="flex items-center text-[17px] text-[#1E1E1E] gap-2 border-r-2 px-2 border-[#1e1e1e]"><FaUser className='text-[#3525c3]'/> {username}</Link>
                 <Button 
                   onClick={handleLogout}
-                  className='bg-red-500 hover:bg-red-600 text-[17px] font-normal p-5 px-12 cursor-pointer'
+                  className='bg-red-500 hover:bg-red-600 text-[17px] font-normal p-5 px-8 cursor-pointer'
                 >
                   Logout
                 </Button>
