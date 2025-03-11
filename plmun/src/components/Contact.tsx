@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 
 const Contact = () => {
   return (
-    <div className='px-36 mb-24'>
+    <div id="inquiry" className='px-36 mb-24'>
         <div className='flex flex-col items-center justify-center '>
             <h1 className='text-[32px] text-[#3525C3] font-semibold pt-16 text-center mb-3'>Inquire Now</h1>
             <p className='text-center w-[48%] font-light text-[#1e1e1e]'>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout <span className='font-medium text-[#3525C3]'>example@gmail.com</span></p>

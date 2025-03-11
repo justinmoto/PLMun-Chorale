@@ -17,7 +17,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[600px]">
+    <div id="home" className="relative w-full h-[600px] mt-[120px]">
       <Image 
         src="/images/heroimg.png"
         alt="error"

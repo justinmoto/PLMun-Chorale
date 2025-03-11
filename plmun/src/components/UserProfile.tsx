@@ -21,7 +21,7 @@ import {
 
 const ApplicationDashboard = () => {
   return (
-    <div className="w-full mx-auto px-36 pb-16 min-h-screen mt-10">
+    <div className="w-full mx-auto px-36 pb-16 min-h-screen mt-42">
       {/* Profile Section */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
