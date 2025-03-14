@@ -12,7 +12,7 @@ import { usePathname, useRouter } from 'next/navigation';
 const NavigationBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAuthenticated, username } = useAuth();
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection] = useState('home');
   const pathname = usePathname();
   const router = useRouter();
 

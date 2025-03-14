@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import SignUpModal from './SignUpModal'
 import { useAuth } from '@/hooks/useAuth'
