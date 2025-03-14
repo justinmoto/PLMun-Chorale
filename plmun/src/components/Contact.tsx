@@ -14,24 +14,24 @@ const Contact = () => {
             <div className="grid w-[48%] items-center space-y-7 mt-10">
               <div className='space-y-2'>
                 <Label htmlFor="email" className='font-light'>Name<span className='text-red-600'>*</span></Label>
-                <Input type="email" id="email" placeholder="Email" />
+                <Input type="email" id="email" placeholder="Name" />
               </div>
 
               <div className='space-y-2'>
                 <Label htmlFor="email" className='font-light'>Email<span className='text-red-600'>*</span></Label>
-                <Input type="email" id="email" placeholder="Email" />
+                <Input type="email" id="email" placeholder="example@gmail.com" />
               </div>
               
 
               <div className='space-y-2'>
-                <Label htmlFor="email" className='font-light'>Name<span className='text-red-600'>*</span></Label>
-                <Input type="email" id="email" placeholder="Email" />
+                <Label htmlFor="email" className='font-light'>Company / Event Name<span className='text-red-600'>*</span></Label>
+                <Input type="email" id="email" placeholder="Ex. Festival" />
               </div>
               
 
               <div className='space-y-2'>
-                <Label htmlFor="email" className='font-light'>Company<span className='text-red-600'>*</span></Label>
-                <Input type="email" id="email" placeholder="Email" />
+                <Label htmlFor="email" className='font-light'>Location<span className='text-red-600'>*</span></Label>
+                <Input type="email" id="email" placeholder="Ex. Alabang Festivel Mall, Lower Ground" />
               </div>
               
               <div className="grid w-full gap-1.5">

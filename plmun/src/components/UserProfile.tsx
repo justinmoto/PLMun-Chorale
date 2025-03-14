@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -18,8 +19,133 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from '@/hooks/useAuth';
+import axios from 'axios';
+interface Audition {
+  id: number;
+  role: string;
+  created_at: string;
+  status?: string;
+}
 
 const ApplicationDashboard = () => {
+  const { username, contactNumber, email } = useAuth();
+  const [auditions, setAuditions] = useState<Audition[]>([]);
+
+  // Add state for form fields
+  const [formData, setFormData] = useState({
+    year: '',
+    course: '',
+    phone: '',
+    gender: '',
+    role: '',
+    why: ''
+  });
+
+  // Function to fetch auditions
+  const fetchAuditions = async () => {
+    try {
+      const response = await axios.get('/api/useraudition');
+      if (response.status === 200) {
+        setAuditions(response.data.auditions);
+      }
+    } catch (error) {
+      console.error('Error fetching auditions:', error);
+    }
+  };
+
+  // Fetch auditions on component mount
+  useEffect(() => {
+    fetchAuditions();
+  }, []);
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    try {
+      const response = await axios.post('/api/audition', formData);
+      
+      if (response.status === 200) {
+        alert(response.data.success);
+        
+        // Reset form
+        setFormData({
+          year: '',
+          course: '',
+          phone: '',
+          gender: '',
+          role: '',
+          why: ''
+        });
+
+        // Fetch updated auditions immediately
+        await fetchAuditions();
+        
+        // Switch to the applications tab
+        const applicationTrigger = document.querySelector('[value="application"]') as HTMLElement;
+        if (applicationTrigger) {
+          applicationTrigger.click();
+        }
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Something went wrong');
+    }
+  };
+
+  // Handle select changes
+  const handleSelectChange = (value: string, field: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Function to generate audition number
+  const generateAuditionNumber = (date: string, id: number) => {
+    const createdDate = new Date(date);
+    const month = createdDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+    const number = id.toString().padStart(6, '0');
+    return `${month}${number}`;
+  };
+
+  // Function to format date
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  // Add withdraw function
+  const handleWithdraw = async (auditionId: number) => {
+    if (!confirm('Are you sure you want to withdraw this application?')) {
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/withdraw', { auditionId });
+      
+      if (response.status === 200) {
+        alert(response.data.success);
+        // Fetch updated auditions immediately
+        await fetchAuditions();
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Failed to withdraw application');
+    }
+  };
+
   return (
     <div className="w-full mx-auto px-36 pb-16 min-h-screen mt-42">
       {/* Profile Section */}
@@ -29,9 +155,9 @@ const ApplicationDashboard = () => {
             {/* Profile image would go here */}
           </Avatar>
           <div>
-            <h2 className="text-lg font-medium">Your Name Here</h2>
-            <p className="text-sm text-gray-500">Contact Number Here</p>
-            <p className="text-sm text-gray-500">Email Address Here</p>
+            <h2 className="text-lg font-medium">{username || 'Your Name Here'}</h2>
+            <p className="text-sm text-gray-500">Contact Number: {contactNumber || 'Your Contact Number Here'}</p>
+            <p className="text-sm text-gray-500">Email Address: {email || 'Your Email Address Here'}</p>
           </div>
         </div>
         <Button className="bg-indigo-600 hover:bg-indigo-700">Edit Profile</Button>
@@ -71,28 +197,43 @@ const ApplicationDashboard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">Soprano</TableCell>
-                    <TableCell>JAN000001</TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 rounded text-amber-600 font-medium">Pending</span>
-                    </TableCell>
-                    <TableCell>March 11, 2025</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="text-red-600 focus:text-red-600">
-                            Withdraw Application
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
+                  {auditions.length > 0 ? (
+                    auditions.map((audition) => (
+                      <TableRow key={audition.id}>
+                        <TableCell className="font-medium">{audition.role}</TableCell>
+                        <TableCell>{generateAuditionNumber(audition.created_at, audition.id)}</TableCell>
+                        <TableCell>
+                          <span className="px-2 py-1 rounded text-amber-600 font-medium">
+                            {audition.status || 'Pending'}
+                          </span>
+                        </TableCell>
+                        <TableCell>{formatDate(audition.created_at)}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem 
+                                className="text-red-600 focus:text-red-600"
+                                onClick={() => handleWithdraw(audition.id)}
+                              >
+                                Withdraw Application
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-4">
+                        No auditions found
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
@@ -109,7 +250,7 @@ const ApplicationDashboard = () => {
                   <p className="text-sm text-gray-500">Please fill all the necessary fields</p>
                 </div>
                 
-                <form className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">
                       Name <span className="text-red-500">*</span>
@@ -136,17 +277,15 @@ const ApplicationDashboard = () => {
                     <label className="text-sm font-medium">
                       Year Level <span className="text-red-500">*</span>
                     </label>
-                    <Select>
+                    <Select onValueChange={(value) => handleSelectChange(value, 'year')}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select year level" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">First Year</SelectItem>
-                        <SelectItem value="2">Second Year</SelectItem>
-                        <SelectItem value="3">Third Year</SelectItem>
-                        <SelectItem value="4">Fourth Year</SelectItem>
-                        <SelectItem value="5">Fifth Year</SelectItem>
-                        <SelectItem value="g">Graduate</SelectItem>
+                        <SelectItem value="First Year">First Year</SelectItem>
+                        <SelectItem value="Second Year">Second Year</SelectItem>
+                        <SelectItem value="Third Year">Third Year</SelectItem>
+                        <SelectItem value="Fourth Year">Fourth Year</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -155,21 +294,21 @@ const ApplicationDashboard = () => {
                     <label className="text-sm font-medium">
                       College Course <span className="text-red-500">*</span>
                     </label>
-                    <Select>
+                    <Select onValueChange={(value) => handleSelectChange(value, 'course')}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select college course" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="bscs">BS Computer Science</SelectItem>
-                        <SelectItem value="bsit">BS Information Technology</SelectItem>
-                        <SelectItem value="bsece">BS Electronics Engineering</SelectItem>
-                        <SelectItem value="bsme">BS Mechanical Engineering</SelectItem>
-                        <SelectItem value="bsce">BS Civil Engineering</SelectItem>
-                        <SelectItem value="bsba">BS Business Administration</SelectItem>
-                        <SelectItem value="bsa">BS Accountancy</SelectItem>
-                        <SelectItem value="bsed">BS Education</SelectItem>
-                        <SelectItem value="bsn">BS Nursing</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="BS Computer Science">BS Computer Science</SelectItem>
+                        <SelectItem value="BS Information Technology">BS Information Technology</SelectItem>
+                        <SelectItem value="BS Electronics Engineering">BS Electronics Engineering</SelectItem>
+                        <SelectItem value="BS Mechanical Engineering">BS Mechanical Engineering</SelectItem>
+                        <SelectItem value="BS Civil Engineering">BS Civil Engineering</SelectItem>
+                        <SelectItem value="BS Business Administration">BS Business Administration</SelectItem>
+                        <SelectItem value="BS Accountancy">BS Accountancy</SelectItem>
+                        <SelectItem value="BS Education">BS Education</SelectItem>
+                        <SelectItem value="BS Nursing">BS Nursing</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -179,7 +318,10 @@ const ApplicationDashboard = () => {
                       Contact Number <span className="text-red-500">*</span>
                     </label>
                     <input 
-                      type="text" 
+                      type="text"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
                       required 
                       className="w-full p-2 border rounded-md" 
                     />
@@ -189,15 +331,15 @@ const ApplicationDashboard = () => {
                     <label className="text-sm font-medium">
                       Gender <span className="text-red-500">*</span>
                     </label>
-                    <Select>
+                    <Select onValueChange={(value) => handleSelectChange(value, 'gender')}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                        <SelectItem value="prefer_not">Prefer not to say</SelectItem>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="Prefer Not to Say">Prefer Not to Say</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -206,15 +348,15 @@ const ApplicationDashboard = () => {
                     <label className="text-sm font-medium">
                       Role <span className="text-red-500">*</span>
                     </label>
-                    <Select>
+                    <Select onValueChange={(value) => handleSelectChange(value, 'role')}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="soprano">Soprano</SelectItem>
-                        <SelectItem value="alto">Alto</SelectItem>
-                        <SelectItem value="tenor">Tenor</SelectItem>
-                        <SelectItem value="bass">Bass</SelectItem>
+                        <SelectItem value="Soprano">Soprano</SelectItem>
+                        <SelectItem value="Alto">Alto</SelectItem>
+                        <SelectItem value="Tenor">Tenor</SelectItem>
+                        <SelectItem value="Bass">Bass</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -224,6 +366,9 @@ const ApplicationDashboard = () => {
                       Why do you want to join PLMun Chorale? <span className="text-red-500">*</span>
                     </label>
                     <textarea 
+                      name="why"
+                      value={formData.why}
+                      onChange={handleInputChange}
                       rows={4} 
                       required 
                       className="w-full p-2 border rounded-md" 

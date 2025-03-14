@@ -20,15 +20,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     const [password, setPassword] = useState('')
     const router = useRouter();
     
-    React.useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          router.push('/'); // Redirect if already logged in
-        }
-    }, [router]);
-
-    if (!isOpen) return null;
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
@@ -39,10 +30,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             })
 
             if(response.status === 200){
-                localStorage.setItem("token", response.data.token)
-                localStorage.setItem("username", response.data.username)
-                alert('Login Successfully')
-                window.location.reload()
+                onClose();
+                router.push('/Profile');
             }
         } catch(error) {
             if (error instanceof AxiosError) {
@@ -52,6 +41,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             }
         }
     } 
+
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
