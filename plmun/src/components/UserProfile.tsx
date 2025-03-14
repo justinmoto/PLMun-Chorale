@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from '@/hooks/useAuth';
 import axios from 'axios';
+
 interface Audition {
   id: number;
   role: string;
@@ -49,8 +50,12 @@ const ApplicationDashboard = () => {
       if (response.status === 200) {
         setAuditions(response.data.auditions);
       }
-    } catch (error) {
-      console.error('Error fetching auditions:', error);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.error || 'Something went wrong');
+      } else {
+        alert('An unexpected error occurred');
+      }
     }
   };
 
@@ -88,8 +93,12 @@ const ApplicationDashboard = () => {
           applicationTrigger.click();
         }
       }
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Something went wrong');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.error || 'Something went wrong');
+      } else {
+        alert('An unexpected error occurred');
+      }
     }
   };
 
@@ -141,8 +150,12 @@ const ApplicationDashboard = () => {
         // Fetch updated auditions immediately
         await fetchAuditions();
       }
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Failed to withdraw application');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.error || 'Failed to withdraw application');
+      } else {
+        alert('An unexpected error occurred');
+      }
     }
   };
 
