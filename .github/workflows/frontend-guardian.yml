@@ -18,8 +18,7 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # Change path to your frontend folder if needed (e.g. ./frontend)
       - name: Run Frontend Guardian
-        run: npx frontend-guardian@latest . --fail-on-score 70
+        run: npx frontend-guardian@latest ./plmun --fail-on-score 70
         env:
           CI: true
