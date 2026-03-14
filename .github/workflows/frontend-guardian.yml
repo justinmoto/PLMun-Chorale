@@ -7,7 +7,8 @@ on:
     branches: [main, master]
 
 jobs:
-  scan:
+  frontend-guardian:
+    name: Frontend Guardian (min score 70)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
