@@ -22,8 +22,58 @@ export async function POST(request){
             return NextResponse.json({error:"Invalid Password"}, {status: 400})
         }
 
-        const token = jwt.sign({userId : user.id}, process.env.JWT_SECRET, {expiresIn: '3d'})
-        return NextResponse.json({message:"Login Successfully", token, username: user.username}, {status: 200})
+        const token = jwt.sign(
+            { 
+                userId: user.id,
+                username: user.username 
+            }, 
+            process.env.JWT_SECRET, 
+            { 
+                expiresIn: '3d',
+                algorithm: 'HS256'
+            }
+        )
+        
+        const response = NextResponse.json(
+            { message: "Login Successfully" }, 
+            { status: 200 }
+        )
+
+        // Set HTTP-only cookie for token (more secure)
+        response.cookies.set('token', token, {
+            httpOnly: true, // Cannot be accessed by JavaScript
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 3, // 3 days
+            path: '/'
+        })
+
+        // Set regular cookie for UI purposes
+        response.cookies.set('username', user.username, {
+            httpOnly: false, // Can be accessed by JavaScript for UI
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 3,
+            path: '/'
+        })
+
+        response.cookies.set('contactNumber', user.contact_number, {
+            httpOnly: false, // Can be accessed by JavaScript for UI
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 3,
+            path: '/'
+        })  
+
+        response.cookies.set('email', user.email, {
+            httpOnly: false, // Can be accessed by JavaScript for UI
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 3,
+            path: '/'
+        })
+
+        return response
 
     } catch(error) {
         console.error('Login error:', error);

@@ -1,23 +1,16 @@
 'use client'
 import Image from 'next/image'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import SignUpModal from './SignUpModal'
+import { useAuth } from '@/hooks/useAuth'
 
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    // Check for token on component mount
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
+  const { isAuthenticated } = useAuth();
 
   return (
-    <div id="home" className="relative w-full h-[600px]">
+    <div id="home" className="relative w-full h-[600px] mt-[120px]">
       <Image 
         src="/images/heroimg.png"
         alt="error"

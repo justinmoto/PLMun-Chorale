@@ -22,15 +22,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     const [password, setPassword] = useState('')
     const router = useRouter();
     
-    React.useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          router.push('/'); // Redirect if already logged in
-        }
-    }, [router]);
-
-    if (!isOpen) return null;
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
@@ -53,18 +44,16 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     } 
 
     const handleLoginSuccess = (token: string, username: string) => {
-        // Store in localStorage for client-side checks
         localStorage.setItem('token', token)
         localStorage.setItem('username', username)
-        
-        // Set cookie for middleware authentication
         setCookie('token', token, {
-            maxAge: 30 * 24 * 60 * 60, // 30 days
+            maxAge: 30 * 24 * 60 * 60,
             path: '/',
         })
-
         window.location.reload()
     }
+
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">

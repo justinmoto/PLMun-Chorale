@@ -18,6 +18,7 @@ const SignUpModal = ({ isOpen, onClose }: LoginModalProps) => {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [number, setNumber] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
     if (!isOpen) return null;
@@ -30,6 +31,7 @@ const SignUpModal = ({ isOpen, onClose }: LoginModalProps) => {
                 username,
                 email,
                 password,
+                number,
                 confirmPassword
             })
             if (response.status === 200){
@@ -60,6 +62,11 @@ const SignUpModal = ({ isOpen, onClose }: LoginModalProps) => {
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="email">Email</Label>
                             <Input type="email" onChange={(e) => setEmail(e.target.value)} id="email" placeholder="example@gmail.com" className='py-5'/>
+                        </div>
+
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="email">Contact Number</Label>
+                            <Input type="number" onChange={(e) => setNumber(e.target.value)} id="email" placeholder="09123456789" className='py-5'/>
                         </div>
 
                         <div className="grid w-full max-w-sm items-center gap-1.5">
