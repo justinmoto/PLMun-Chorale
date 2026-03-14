@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import {
   Card,
@@ -9,6 +10,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+import { setCookie } from 'cookies-next' // You'll need to install cookies-next package
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -39,10 +41,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             })
 
             if(response.status === 200){
-                localStorage.setItem("token", response.data.token)
-                localStorage.setItem("username", response.data.username)
-                alert('Login Successfully')
-                window.location.reload()
+                handleLoginSuccess(response.data.token, response.data.username)
             }
         } catch(error) {
             if (error instanceof AxiosError) {
@@ -52,6 +51,20 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             }
         }
     } 
+
+    const handleLoginSuccess = (token: string, username: string) => {
+        // Store in localStorage for client-side checks
+        localStorage.setItem('token', token)
+        localStorage.setItem('username', username)
+        
+        // Set cookie for middleware authentication
+        setCookie('token', token, {
+            maxAge: 30 * 24 * 60 * 60, // 30 days
+            path: '/',
+        })
+
+        window.location.reload()
+    }
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">

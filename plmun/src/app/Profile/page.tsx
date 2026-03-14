@@ -1,16 +1,10 @@
-import Footer from '@/components/Footer'
-import NavigationBar from '@/components/NavigationBar'
-import UserProfile from '@/components/UserProfile'
-import React from 'react'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import ApplicationDashboard from '@/components/UserProfile'
 
-const Profile = () => {
+export default function ProfilePage() {
   return (
-    <div >
-        <NavigationBar/>
-            <UserProfile/>
-        <Footer/>
-    </div>
+    <ProtectedRoute>
+      <ApplicationDashboard />
+    </ProtectedRoute>
   )
 }
-
-export default Profile

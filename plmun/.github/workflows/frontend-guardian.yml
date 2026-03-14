@@ -1,0 +1,25 @@
+name: Frontend Guardian
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Change path to your frontend folder if needed (e.g. ./frontend)
+      - name: Run Frontend Guardian
+        run: npx frontend-guardian@latest . --fail-on-score 70
+        env:
+          CI: true
